@@ -40,7 +40,7 @@ The **path** of the downloaded file inside the container. Can be used in other a
 https://repo1.maven.org/maven2/javax/mail/mail/1.5.0-b01/mail-1.5.0-b01.jar
 ```
 - name: Download Maven Artifact
-  uses: clausnz/github-action-download-maven-artifact@0.0.1
+  uses: clausnz/github-action-download-maven-artifact@master
   with:
     url: 'https://repo1.maven.org'
     repository: 'maven2'
