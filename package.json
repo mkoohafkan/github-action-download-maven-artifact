@@ -1,7 +1,7 @@
 {
   "name": "github-action-download-maven-artifact",
   "version": "1.0.0",
-  "description": "Download Maven Artifacts in GitHub action",
+  "description": "Download Artifacts from a Maven repository",
   "repository": {
     "type": "git",
     "url": "https://github.com/clausnz/github-action-download-maven-artifact"

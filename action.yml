@@ -1,5 +1,5 @@
-name: "github-action-repository-download"
-description: "GitHub Action Repository Download"
+name: "Maven Artifact Download"
+description: "Download Artifacts from a Maven Repository - GitHub Action"
 inputs:
 
   url:
