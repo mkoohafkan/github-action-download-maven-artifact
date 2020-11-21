@@ -1,12 +1,10 @@
 name: Download Maven Artifact
 
-on: [push]
+on: [ push ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
 
       - name: Checkout GitHub project
