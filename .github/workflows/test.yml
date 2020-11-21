@@ -1,10 +1,6 @@
-name: Test Delete GitHub Packages
+name: Download Maven Artifact
 
-on:
-  push:
-    branches-ignore: [ 'master' ]
-  pull_request:
-    branches-ignore: [ 'master' ]
+on: [push]
 
 jobs:
   build:
@@ -12,14 +8,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      -
-      - name: Print the environment variables and the event payload
-        uses: hmarr/debug-action@v1.0.0
 
       - name: Checkout GitHub project
         uses: actions/checkout@v2
 
-      - name: Delete GitHub packages
-        uses: clausnz/github-packages-delete@develop
+      - name: Use Node.js
+        uses: actions/setup-node@v1
         with:
-          package-version: my-package-version
+          node-version: '12.x'
+
+      - name: Download Maven Artifact
+        id: download-maven-artifact
+        uses: clausnz/github-action-download-maven-artifact@1.0.0
+        with:
+          url: 'https://repo1.maven.org'
+          repository: 'maven2'
+          groupId: 'javax.mail'
+          artifactId: 'mail'
+          version: '1.5.0-b01'
+          extension: 'jar'
+
+      - name: Output file path in container
+        run: |
+          echo "File has been downloaded to ${{ steps.download-maven-artifact.outputs.file }}"
