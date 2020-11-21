@@ -1,0 +1,25 @@
+name: Test Delete GitHub Packages
+
+on:
+  push:
+    branches-ignore: [ 'master' ]
+  pull_request:
+    branches-ignore: [ 'master' ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+      - name: Print the environment variables and the event payload
+        uses: hmarr/debug-action@v1.0.0
+
+      - name: Checkout GitHub project
+        uses: actions/checkout@v2
+
+      - name: Delete GitHub packages
+        uses: clausnz/github-packages-delete@develop
+        with:
+          package-version: my-package-version
