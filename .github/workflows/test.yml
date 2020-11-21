@@ -19,7 +19,7 @@ jobs:
 
       - name: Download Maven Artifact
         id: download-maven-artifact
-        uses: clausnz/github-action-download-maven-artifact@1.0.0
+        uses: clausnz/github-action-download-maven-artifact@master
         with:
           url: 'https://repo1.maven.org'
           repository: 'maven2'
