@@ -3,7 +3,6 @@ import fetch from 'node-fetch'
 import fs from 'fs'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
-import { setFailed, setOutput } from '@actions/core'
 
 export const downloadArtifact = (props) => {
     const {
@@ -31,41 +30,48 @@ export const downloadArtifact = (props) => {
         headers: headers,
         redirect: 'follow'
     }
-    downloadFile(downloadUrl, filepath, options)
-}
 
-const downloadFile = (url, filepath, options) => {
-    fs.promises.mkdir(path.dirname(filepath), { recursive: true })
-        .then(() => {
-            const fileStream = fs.createWriteStream(filepath)
-            fileStream.on('ready', () => {
-                fetch(url, options)
-                    .then(response => {
-                        if (response.status < 400) {
-                            response.body.pipe(fileStream)
-                            fileStream.on('finish', () => {
-                                setOutput('file', filepath)
-                                fileStream.close()
-                            })
-                            fileStream.on('error', () => {
-                                handleError()
-                                fileStream.close()
-                            })
-                        } else {
-                            const errorMessage = `HTTP ${response.status} - Error: ${response?.statusText ?? 'Error downloading file'}`
-                            handleError(errorMessage)
-                        }
-                    })
-                    .then(data => data)
-                    .catch(error => handleError(error))
+    return (new Promise((resolve, reject) => {
+        const fileCreated = createFile(filepath)
+        fileCreated
+            .then(filestream => {
+                const fileDownloaded = downloadFile(downloadUrl, options, filestream)
+                fileDownloaded
+                    .then(() => resolve(filepath))
+                    .catch(reason => reject(reason))
+                    .finally(() => filestream.close())
             })
-        })
-        .catch(console.error)
+            .catch(reason => reject(reason))
+    }))
 }
 
-const handleError = (error) => {
-    setFailed(error ?? 'Error downloading file')
-    setOutput('file', undefined)
+const downloadFile = (url, options, filestream) => {
+    return (new Promise((resolve, reject) => {
+        const downloaded = fetch(url, options)
+        downloaded
+            .then(response => {
+                if (response.status < 400) {
+                    response.body.pipe(filestream)
+                    filestream
+                        .on('finish', resolve)
+                        .on('error', () => reject(new Error('Error downloading file.')))
+                } else {
+                    reject(response.statusText)
+                }
+            })
+            .catch(reason => reject(reason))
+    }))
+}
+
+const createFile = async (filepath) => {
+    await fs.promises.mkdir(path.dirname(filepath), { recursive: true }).catch(console.error)
+    return (new Promise((resolve, reject) => {
+        const fileStream = fs.createWriteStream(filepath)
+        fileStream
+            .on('ready', () => resolve(fileStream))
+            .on('error', () => reject(new Error('Cannot create download file.')))
+            .on('finish', () => fileStream.close())
+    }))
 }
 
 const getDownloadUrl = (url, repository, groupId, artifactId, version, classifier, extension) => (

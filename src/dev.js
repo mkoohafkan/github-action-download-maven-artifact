@@ -1,6 +1,16 @@
 import { downloadArtifact } from './repository'
 import { setFailed, setOutput } from '@actions/core'
-import { getProps } from './input'
+
+const getProps = () => (
+    {
+        url: 'https://repo1.maven.org',
+        repository: 'maven2',
+        groupId: 'javax.mail',
+        artifactId: 'mail',
+        version: '1.5.0-b01',
+        extension: 'jar'
+    }
+)
 
 try {
     const artifactDownloaded = downloadArtifact(getProps())
