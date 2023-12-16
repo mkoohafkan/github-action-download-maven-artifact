@@ -10,6 +10,7 @@ export const getProps = () => (
         classifier: getInput('classifier').trim(),
         extension: getInput('extension').trim(),
         username: getInput('username').trim(),
-        password: getInput('password').trim()
+        password: getInput('password').trim(),
+        downloadDir: getInput('password').trim()
     }
 )

@@ -14,13 +14,13 @@ export const downloadArtifact = (props) => {
         extension,
         classifier,
         username,
-        password
+        password,
+        downloadDir
     } = props
 
     const downloadUrl = getDownloadUrl(url, repository, groupId, artifactId, version, classifier, extension)
     const filename = getFileName(artifactId, version, classifier, extension)
-
-    const filepath = ('/tmp/' + uuidv4() + '/' + filename)
+    const filepath = downloadDir || ('/tmp/' + uuidv4() + '/' + filename)
     const headers = {
         Authorization: 'Basic ' + Base64.encode(username + ':' + password)
     }

@@ -38,6 +38,10 @@ inputs:
     description: The password for the Maven repository access, used for basic auth
     required: false
 
+  downloadDir:
+    description: The directory to download the file to
+    required: false
+
 outputs:
 
   file:
